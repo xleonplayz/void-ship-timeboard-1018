@@ -21,8 +21,11 @@ function fold(text) {
 const stamp = iso => new Date(iso).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z');
 export function calendar() {
   const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Ship Fixtures//Timeboard//EN','CALSCALE:GREGORIAN'];
-  for(const event of events) lines.push('BEGIN:VEVENT','UID:'+event.id+'@ship.invalid','DTSTAMP:20261018T000000Z',
+  for(let index=0;index<events.length;index++) {
+    const event=events[index];
+    lines.push('BEGIN:VEVENT','UID:'+event.id+'@ship.invalid','DTSTAMP:20261018T000000Z',
     'DTSTART:'+stamp(event.start),'DTEND:'+stamp(Date.parse(event.start)+event.minutes*60000),
     'SUMMARY:'+escapeText(event.title),'DESCRIPTION:'+escapeText(event.description),'END:VEVENT');
+  }
   lines.push('END:VCALENDAR');return lines.map(fold).join('\r\n')+'\r\n';
 }
