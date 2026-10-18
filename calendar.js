@@ -9,8 +9,10 @@ export const events = [
 const escapeText = text => text.replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
 function fold(text) {
   let output='', line='', bytes=0;
-  for(const character of text) {
-    const c=character.codePointAt(0), size=c<128?1:c<2048?2:c<65536?3:4;
+  for(let index=0;index<text.length;index++) {
+    let character=text[index],c=text.charCodeAt(index);
+    if(c>=55296&&c<=56319&&index+1<text.length){character+=text[++index];c=65536;}
+    const size=c<128?1:c<2048?2:c<65536?3:4;
     if(bytes+size>75) {output+=line+'\r\n';line=' ';bytes=1;}
     line+=character;bytes+=size;
   }
